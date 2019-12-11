@@ -1,0 +1,29 @@
+<div class= "container">
+    <select ng-model="campus" id ="list" onchange="getselectedValue();">
+        <option value="nc">North-Campus</option>
+        <option value="sc">South-Campus</option>
+    </select>
+    <select ng-model="building" id="list2" onchange="getselectedValue();">
+        <option value="bh">Ball-Hall</option>
+        <option value ="os">Olsen-Hall</option>
+    
+    </select>
+    <button type="button" class="btn btn-info">GO</button>
+    
+
+</div>
+
+<script>
+  // IMPORTANT NOTE!
+  // this only works for *Type 2* lookup, HTML code needs to be changed to support selecting type
+  var app = angular.module('myApp', []);
+  app.controller('myCtrl', function ($scope, $html) {
+    $http.get("https://classreservation.azurewebsites.net/api/ClassLookup?&type=2&campus=" + $scope.campus + "&building=" + $scope.building)
+      .then(function (response) {
+        $scope.content = response.data;
+        $scope.statuscode = response.status;
+      }, function (response) {
+          $scope.content = "Something went wrong";
+      })
+  }
+</script>

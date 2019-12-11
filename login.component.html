@@ -1,0 +1,33 @@
+<div class="container">
+    <div class="login">
+      <form method="post" action="">
+        <p><input ng-model="username" type="text" name="login" value="" placeholder="Username or Email"></p>
+        <p><input ng-model="password" type="password" name="password" value="" placeholder="Password"></p>
+        <p class="remember_me">
+          <label>
+            <input type="checkbox" name="remember_me" id="remember_me">
+            Remember me on this computer
+          </label>
+        </p>
+        <p class="submit"><input type="submit" name="commit" value="Login"></p>
+      </form>
+    </div>
+
+    <script> // this puts the data from the HTTP response in {{content}}, and the status code in {{statuscode}}; reference these as needed in the HTML code
+      var app = angular.module('myApp', []);
+      app.controller('myCtrl', function ($scope, $html) {
+        $http.get("https://classreservation.azurewebsites.net/api/login?user=" + $scope.username + "&password=" + $scope.password)
+          // Using .then, first definition of function(response) is used for success; second definition is used for error
+          .then(function (response) {
+            $scope.content = response.data;
+            $scope.statuscode = response.status;
+          }, function (response) {
+              $scope.content = "Something went wrong";
+          });
+      }
+    </script>
+   
+    <div class="login-help">
+      <p>Forgot your password? <a href="#">Click here to reset it</a>.</p>
+    </div>
+  </div>
