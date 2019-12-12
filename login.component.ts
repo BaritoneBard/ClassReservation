@@ -17,7 +17,6 @@ export class LoginComponent implements OnInit {
 
         this.name = localStorage.getItem('name');
         this.password = localStorage.getItem('password');
-        this.hashed_password = 0;
         this.cmdStatus = 'Please enter your username and password.';
 
         console.log("name: " + localStorage.getItem('name'));
@@ -31,7 +30,7 @@ export class LoginComponent implements OnInit {
 
         var loginStatus = false;
 
-        var httpBase = "https://classreservation.azurewebsites.net/api/signup?user=";
+        var httpBase = "https://classreservation.azurewebsites.net/api/login?user=";
         var httpQuery = httpBase + this.name + "&password=" + this.password;
 
         this.httpClient.get(httpQuery).subscribe((res) => {
