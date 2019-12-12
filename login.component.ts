@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders }    from '@angular/common/http';
-
-baseURL = 'https://classreservation.azurewebsites.net/api/login?';
 
 @Component({
   selector: 'app-login',
@@ -10,34 +7,54 @@ baseURL = 'https://classreservation.azurewebsites.net/api/login?';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+    name: string;
+    password: string;
+    session_id: number;
 
-  // need a set of text fields for username/password, pass those to userLogin
+    cmdStatus: string;
 
-  userLogin(user, password) { // submits a login attempt
+    constructor(private httpClient: HttpClient, private router: Router) {
 
-    return this.http.get(baseURL + 'user=' + user + '&password=' + password)
+        this.name = localStorage.getItem('name');
+        this.password = localStorage.getItem('password');
+        this.hashed_password = 0;
+        this.cmdStatus = 'Please enter your username and password.';
 
-  }
+        console.log("name: " + localStorage.getItem('name'));
+        console.log("password: " + localStorage.getItem('password'));
 
-  // should provide the HTTP response with the new name + session ID
+    }
 
-  /* example:
-  <script>
-    <div ng-switch=this.status>
-      <div ng-switch-when="true">
-        <p>
-          Logged in successfully!
-        </p>
-      </div>
-      <div ng-switch-default>
-        <p>
-          Failed to login, username/password invalid.
-        </p>
-      </div>
-    </div>
-  </script>
-  */
+    attemptlogin(event) {
+
+        console.log("received: " + event.target.id);
+
+        var loginStatus = false;
+
+        var httpBase = "https://classreservation.azurewebsites.net/api/signup?user=";
+        var httpQuery = httpBase + this.name + "&password=" + this.password;
+
+        this.httpClient.get(httpQuery).subscribe((res) => {
+
+            if (res["status"] == true) {
+
+                if (res["status"]['info'] != null) {
+
+                    this.session_id = res["info"]["sessionId"];
+                    this.cmdStatus = 'Logged in successfully as user ' + res["info"]["name"];
+
+                }
+
+                loginStatus = true;
+
+            }
+
+        });
+
+        if (!loginStatus) {
+            this.cmdStatus = "Failed to log in."
+        }
+    }
 
   ngOnInit() {
   }
